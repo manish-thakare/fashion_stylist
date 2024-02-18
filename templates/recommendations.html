@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Outfit Recommendations</title>
+</head>
+<body>
+    <h1>Recommended Outfits</h1>
+
+    {% for category, outfits in recommended_outfits.items %}
+    <h2>{{ category|title }}</h2>
+    <ul>
+        {% for outfit in outfits %}
+        <li>{{ outfit }}</li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+</body>
+</html>

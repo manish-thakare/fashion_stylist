@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outfits</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <style>
+        .card-body {
+          border-radius: 8px 8px 8px 8px;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          background-image: linear-gradient(#fde6ca, #febecc);
+      }
+  
+      .card-image img {
+          max-height: 100%;
+          max-width: 100%;
+          border-radius: 8px 8px 8px 8px;
+      }
+  
+      .card-action {
+          position: relative;
+          float: right;
+          margin-top: -25px;
+          margin-right: 20px;
+          z-index: 2;
+          color: #1F487E;
+          background: #fff;
+          border-radius: 100%;
+          padding: 15px;
+          font-size: 15px;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
+      }
+  
+      .card-action:hover {
+          color: #fff;
+          background: #E26D5C;
+          /* -webkit-animation: pulse 1.5s infinite; */
+      }
+  
+      .card-heading {
+          font-size: 18px;
+          font-weight: bold;
+          background: #fff;
+          padding: 10px 15px;
+      }
+  
+      .card-text {
+          padding: 10px 15px;
+          background: #fff;
+          font-size: 14px;
+          color: #636262;
+      }
+  
+      .card-button {
+          display: flex;
+          justify-content: center;
+          padding: 10px 0;
+          width: 100%;
+          background-color: transparent;
+          margin-bottom: -10px;
+      }
+      
+      .liked {
+        background-color: #ff005d; /* Change to your preferred color */
+        color: white;
+    }
+      </style>
+</head>
+<body style="background-image: linear-gradient(#ffeecc, #febbcc) ;">
+    {% include 'navbar.html' %}
+    <div class="container text-center" style="padding-bottom: 30px; padding-top: 30px;">
+        <div class="row">
+            {% for outfit in outfits %}
+            <div class="col-md-3">
+                <div class="card" style="background-image: linear-gradient(#ffeecc, #febbcc); border-radius: 14px; border-width: 0; box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px; box-sizing: border-box; color: #36395A; margin-bottom: 20px;">    
+                    <div class="card-body">
+                        <div class="card-heading" style="border-radius: 8px; background-color: transparent;">
+                            {{ outfit.type }}
+                        </div>
+                        <div class="card-image">
+                            <img src="{{outfit.upper_path}}" style="width: 220px; height: 160px;">
+                        </div>
+                        <div class="card-image">
+                            <img src="{{outfit.lower_path}}" style="width: 220px; height: 260px;">
+                        </div>
+                        <div class="card-image">
+                            <img src="{{outfit.bottom_path}}" style="width: 220px; height: 160px;">
+                        </div>
+                        <p class="card-button">Score: {{ outfit.score }}</p>
+                        <p class="card-button">Id: {{ outfit.id }}</p>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    </body>
+</html>
