@@ -34,7 +34,11 @@ urlpatterns = [
     path('delete-item/<int:item_id>', delete_item),
     path('update-item/<int:item_id>', update_item),
     path('do-update-item/<int:item_id>', do_update),
-    path('signup/', signup),
-    path('login/', login),
-    path('outfits/', outfits)
+    path('outfits/', outfits),
+    path('signup/', signup, name='signup'),
+    path('sign_out/', sign_out, name='sign_out'),
+    path('login/', user_login, name='login'),
+    path('toggle-like-outfit/<int:outfit_id>/', toggle_like_outfit, name='toggle_like_outfit'),
+    path('toggle-like-items/<int:item_id>/', toggle_like_items, name='toggle_like_items'),
+    path('scrape_items/', scrape_items, name='scrape_items'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

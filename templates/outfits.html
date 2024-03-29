@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <style>
         .card-body {
           border-radius: 8px 8px 8px 8px;
@@ -64,40 +66,122 @@
           margin-bottom: -10px;
       }
       
-      .liked {
-        background-color: #ff005d; /* Change to your preferred color */
-        color: white;
+      
+    .like-icon {
+        font-size: 16px; /* Adjust size as needed */
+        position: absolute;
+        top: 10px; /* Adjust position as needed */
+        right: 10px; /* Adjust position as needed */
+        cursor: pointer;
     }
-      </style>
+    </style>
 </head>
 <body style="background-image: linear-gradient(#ffeecc, #febbcc) ;">
     {% include 'navbar.html' %}
     <div class="container text-center" style="padding-bottom: 30px; padding-top: 30px;">
         <div class="row">
-            {% for outfit in outfits %}
-            <div class="col-md-3">
-                <div class="card" style="background-image: linear-gradient(#ffeecc, #febbcc); border-radius: 14px; border-width: 0; box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px; box-sizing: border-box; color: #36395A; margin-bottom: 20px;">    
-                    <div class="card-body">
-                        <div class="card-heading" style="border-radius: 8px; background-color: transparent;">
-                            {{ outfit.type }}
-                        </div>
-                        <div class="card-image">
-                            <img src="{{outfit.upper_path}}" style="width: 220px; height: 160px;">
-                        </div>
-                        <div class="card-image">
-                            <img src="{{outfit.lower_path}}" style="width: 220px; height: 260px;">
-                        </div>
-                        <div class="card-image">
-                            <img src="{{outfit.bottom_path}}" style="width: 220px; height: 160px;">
-                        </div>
-                        <p class="card-button">Score: {{ outfit.score }}</p>
-                        <p class="card-button">Id: {{ outfit.id }}</p>
+            {% if user.is_authenticated %}
+    <!-- Other authenticated user content -->
 
+    <!-- Display message for non-authenticated users -->
+                {%if outfits%}
+                    {% for outfit in outfits.outf %}
+                    <div class="col-md-3">
+                        <div class="card" style="background-image: linear-gradient(#ffeecc, #febbcc); border-radius: 14px; border-width: 0; box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px; box-sizing: border-box; color: #36395A; margin-bottom: 20px;">    
+                            <div class="card-body">
+                                <div class="card-heading" style="border-radius: 8px; background-color: transparent;">
+                                    {{ outfit.type }}
+                                </div>
+                                <div class="card-image">
+                                    <img src="{{outfit.upper_path}}" style="width: 220px; height: 160px;">
+                                </div>
+                                <div class="card-image">
+                                    <img src="{{outfit.lower_path}}" style="width: 220px; height: 260px;">
+                                </div>
+                                <div class="card-image">
+                                    <img src="{{outfit.bottom_path}}" style="width: 220px; height: 160px;">
+                                </div>
+                                {% if outfit.like %}
+                                    <i class="fas fa-heart like-icon" data-outfit-id="{{ outfit.id }}" style="color: red;"></i>
+                                {% else %}
+                                    <i class="far fa-heart like-icon" data-outfit-id="{{ outfit.id }}"></i>
+                                {% endif %}
+                                <p class="card-button">Score: {{ outfit.score }}</p>
+                                <p class="card-button">Id: {{ outfit.id }}</p>
+                                
+
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            {% endfor %}
+                    {% endfor %}
+                {% else %}
+                <div class="col-md-3">
+                    <div class="card" style="background-image: linear-gradient(#ffeecc, #febbcc); border-radius: 14px; border-width: 0; box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px; box-sizing: border-box; color: #36395A; margin-bottom: 20px;"><div class="card-body"><p>Welcome, {{ user.username }}!</p></div>
+                    </div>
+
+                </div> 
+                {% endif %}
+                <hr>
+                <h2>Recommendations</h2>
+                {%if outfits %}
+                    {% for outfit in outfits.recom %}
+                    <div class="col-md-3">
+                        <div class="card" style="background-image: linear-gradient(#ffeecc, #febbcc); border-radius: 14px; border-width: 0; box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px; box-sizing: border-box; color: #36395A; margin-bottom: 20px;">    
+                            <div class="card-body">
+                                <div class="card-heading" style="border-radius: 8px; background-color: transparent;">
+                                    {{ outfit.type }}
+                                </div>
+                                <div class="card-image">
+                                    <img src="{{outfit.upper_path}}" style="width: 220px; height: 160px;">
+                                </div>
+                                <div class="card-image">
+                                    <img src="{{outfit.lower_path}}" style="width: 220px; height: 260px;">
+                                </div>
+                                <div class="card-image">
+                                    <img src="{{outfit.bottom_path}}" style="width: 220px; height: 160px;">
+                                </div>
+                                <p class="card-button">Id: {{ outfit.id }}</p>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>recommendations here..</p>
+                {% endif %}   
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'signup' %}">sign up</a> to access this page.</p>
+            {% endif %}
         </div>
     </div>
     </body>
+    <script>
+        document.querySelectorAll('.like-icon').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const outfitId = icon.dataset.outfitId;
+                fetch(`/toggle-like-outfit/${outfitId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        like: !icon.classList.contains('fas') // Toggle like status
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Toggle heart icon color
+                        icon.classList.toggle('fas');
+                        icon.classList.toggle('far');
+                        icon.style.color = icon.classList.contains('fas') ? 'red' : '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error toggling like:', error);
+                });
+            });
+        });
+    </script>
+    
 </html>

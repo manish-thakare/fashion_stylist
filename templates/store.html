@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Closet - Stylect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <style>
+      .card-sl {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .card-image img {
+        max-height: 100%;
+        max-width: 100%;
+        border-radius: 8px 8px 0px 0;
+    }
+
+    .card-action {
+        position: relative;
+        float: right;
+        margin-top: -25px;
+        margin-right: 20px;
+        z-index: 2;
+        color: #E26D5C;
+        background: #fff;
+        border-radius: 100%;
+        padding: 15px;
+        font-size: 15px;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .card-action:hover {
+        color: #fff;
+        background: #E26D5C;
+        /* -webkit-animation: pulse 1.5s infinite; */
+    }
+
+    .card-heading {
+        font-size: 18px;
+        font-weight: bold;
+        background: #fff;
+        padding: 10px 15px;
+    }
+
+    .card-text {
+        padding: 10px 15px;
+        background: #fff;
+        font-size: 14px;
+        color: #636262;
+    }
+
+    .card-button {
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+        width: 100%;
+        background-color: #1F487E;
+        color: #fff;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .card-button:hover {
+        text-decoration: none;
+        background-color: #1D3461;
+        color: #fff;
+
+    }
+
+    
+    </style>
+  </head>
+  <body style="background-image: linear-gradient(#ffeecc, #febbcc) ;">
+    {% include 'navbar.html' %}
+    <h1 class="text-center my-3">Recommended Items</h1>
+
+    <div class="container text-center" style="padding-bottom: 30px;">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card" style="background-image: linear-gradient(#ffeecc, #febbcc); border-radius: 14px; border-width: 0; box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px; box-sizing: border-box; color: #36395A;">
+            <h2 style="padding-top: 20px;">Topwear</h2>
+            <div class="childcard-container" style="display: flex; flex-wrap: wrap;">
+              {% for category, items in scrapped_items.items %}
+                  {% if category == 'upper_items' %}
+                      {% for item in items %}
+                          <div class="childcard" style="padding: 20px; margin: 10px; flex: 0 0 calc(25% - 20px);"> <!-- Adjust width as needed -->
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <div class="card-sl">
+                                          <div class="card-image">
+                                              <img src="{{ item.img_link }}" style="width: 220px; height: 200px;"/>
+                                          </div>
+                                          <div class="card-heading">
+                                              {{ item.name }}
+                                          </div>
+                                          <div class="card-text">
+                                              Price: {{ item.price }}
+                                          </div>
+                                          <div class="card-text">
+                                              <a href="{{ item.link }}" class="btn btn-danger btn-sm">Shop</a>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                  {% endif %}
+              {% endfor %}
+          </div>
+          
+            
+            <h2 style="padding-top: 20px;">Bottomwear</h2>
+            <div class="childcard-container" style="display: flex; flex-wrap: wrap;">
+              {% for category, items in scrapped_items.items %}
+                  {% if category == 'lower_items' %}
+                      {% for item in items %}
+                          <div class="childcard" style="padding: 20px; margin: 10px; flex: 0 0 calc(25% - 20px);"> <!-- Adjust width as needed -->
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <div class="card-sl">
+                                          <div class="card-image">
+                                              <img src="{{ item.img_link }}" style="width: 220px; height: 200px;"/>
+                                          </div>
+                                          <div class="card-heading">
+                                              {{ item.name }}
+                                          </div>
+                                          <div class="card-text">
+                                              Price: {{ item.price }}
+                                          </div>
+                                          <div class="card-text">
+                                              <a href="{{ item.link }}" class="btn btn-danger btn-sm">Shop</a>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                  {% endif %}
+              {% endfor %}
+          </div>
+          
+
+            <h2 style="padding-top: 20px;">Footwear</h2>
+            <div class="childcard-container" style="display: flex; flex-wrap: wrap;">
+              {% for category, items in scrapped_items.items %}
+                  {% if category == 'foot_items' %}
+                      {% for item in items %}
+                          <div class="childcard" style="padding: 20px; margin: 10px; flex: 0 0 calc(25% - 20px);"> <!-- Adjust width as needed -->
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <div class="card-sl">
+                                          <div class="card-image">
+                                              <img src="{{ item.img_link }}" style="width: 220px; height: 200px;"/>
+                                          </div>
+                                          <div class="card-heading">
+                                              {{ item.name }}
+                                          </div>
+                                          <div class="card-text">
+                                              Price: {{ item.price }}
+                                          </div>
+                                          <div class="card-text">
+                                              <a href="{{ item.link }}" class="btn btn-danger btn-sm">Shop</a>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                  {% endif %}
+              {% endfor %}
+          </div>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>

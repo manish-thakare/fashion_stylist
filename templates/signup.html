@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-multiselect@0.9.13/dist/css/bootstrap-multiselect.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-multiselect@0.9.13/dist/js/bootstrap-multiselect.js"></script>
+
+
+
+    <style>
+        body {
+            background-image: linear-gradient(#ffeecc, #febbcc);
+        }
+        .container {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+        .form-container {
+            background-color: #343a40;
+            border: 1px solid black;
+            border-radius: 30px;
+            padding: 20px;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <div class="col-md-6 offset-md-3 form-container">
+            <h3 class="text-center my-3">Sign Up</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password1">Password</label>
+                    <input type="password" class="form-control" id="password1" placeholder="Enter password" name="password1" required>
+                </div>
+                <div class="form-group">
+                    <label for="password2">Confirm Password</label>
+                    <input type="password" class="form-control" id="password2" placeholder="Confirm password" name="password2" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="upper_fav_colors">Upper Favorite Colors</label>
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown('upper_fav_colors_dropdown')" class="btn btn-secondary dropdown-toggle" type="button" id="upper_fav_colors_dropdown_btn" aria-haspopup="true" aria-expanded="false">
+                            Select Colors
+                        </button>
+                        <div id="upper_fav_colors_dropdown" class="dropdown-menu" style="height: 100px; overflow-x: auto;" aria-labelledby="upper_fav_colors_dropdown_btn">
+                            <div class="row">
+                                <div class="col">
+                                    <label><input type="checkbox" value="blue"> Blue</label>
+                                    <label><input type="checkbox" value="red"> Red</label>
+                                    <label><input type="checkbox" value="white"> White</label>
+                                </div>
+                                <div class="col">
+                                    <label><input type="checkbox" value="yellow"> Yellow</label>
+                                    <label><input type="checkbox" value="black"> Black</label>
+                                    <label><input type="checkbox" value="orange"> Orange</label>
+                                </div>
+                                <div class="col">
+                                    <label><input type="checkbox" value="pink"> Pink</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lower_fav_colors">Lower Favorite Colors</label>
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown('lower_fav_colors_dropdown')" class="btn btn-secondary dropdown-toggle" type="button" id="lower_fav_colors_dropdown_btn" aria-haspopup="true" aria-expanded="false">
+                            Select Colors
+                        </button>
+                        <div id="lower_fav_colors_dropdown" class="dropdown-menu" style="height: 100px; overflow-x: auto;" aria-labelledby="lower_fav_colors_dropdown_btn">
+                            <div class="row">
+                                <div class="col">
+                                    <label><input type="checkbox" value="black"> Black</label>
+                                    <label><input type="checkbox" value="white"> White</label>
+                                    <label><input type="checkbox" value="grey"> Grey</label>
+                                </div>
+                                <div class="col">
+                                    <label><input type="checkbox" value="blue"> Blue</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mb-3"> <!-- Centering container for the buttons with bottom margin -->
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </div>
+                <p class="text-center">Already have an account? <a href="/login/">Login</a></p>
+            </form>
+        </div>
+    </div>
+    
+</body>
+<script>
+    function toggleDropdown(dropdownId) {
+        var dropdownMenu = document.getElementById(dropdownId);
+        if (dropdownMenu.style.display === "none" || dropdownMenu.style.display === "") {
+            dropdownMenu.style.display = "block";
+        } else {
+            dropdownMenu.style.display = "none";
+        }
+    }
+</script>
+</html>

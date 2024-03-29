@@ -8,6 +8,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <style>
+      .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 200px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            padding: 12px;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+        }
+        .dropdown-content label {
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
   </head>
   <body style="background-image: linear-gradient(#ffeecc, #febbcc) ;">
     {% include 'navbar.html' %}
@@ -18,63 +43,93 @@
 
    <div class="container" style="padding-bottom: 30px;">
     <div class="col-md-6 offset-md-3 bg-dark text-light" style="border: 1px solid black; border-radius: 30px; padding: 20px;">
+      {% if user.is_authenticated %}
         <form action="/closet/add/" method="POST" enctype='multipart/form-data'>
-            {% csrf_token %}
-            <div class="form-group">
-              <label for="name">Item Name</label>
-              <input type="text" class="form-control" id="name" placeholder="Enter Item Name" required="required" name="item_name">
-            </div>
-            <div class="form-group">
-             <label for="category">Category</label>
-             <select class="form-control" id="category" name="item_category" required="required">
-                 <option>Select</option>
-                 <option>Topwear</option>
-                 <option>Bottomwear</option>
-                 <option>Footwear</option>
-             </select>
-             </div>
-             <!-- <div class="card">
-                 <div class="card-body text-center d-flex justify-content-center align-items-center flex-column">
-                 <p>Choose Color</p>
-                 <button class="btn btn-primary btn-sm" id="color-picker-2">+</button>
-                 </div>
-             </div> -->
-             
-            <div class="form-group">
-              <label for="color" required="required">Color</label>
-              <input type="text" name="item_color" class="form-control" id="color" placeholder="Enter color">
-            </div>
-     
-            <div class="form-group">
-             <label for="brand" required="required">Brand</label>
-             <input type="text" name="item_brand" class="form-control" id="brand" placeholder="Enter Brand">
-           </div>
-     
-           <div class="form-group">
-             <label for="price" required="required">Price</label>
-             <input type="text" name="item_price" class="form-control" id="price" placeholder="Enter Price">
-           </div>
-     
-            <div class="form-group">
-              <label for="type">Type</label>
-              <select class="form-control" id="type" name="item_type" required="required">
-                <option>Casual</option>
-                <option>Formal</option>
-                <option>Ocassional</option>
-                <option>Festive Wear</option>           
-              </select>
-            </div>
-            <hr>
-            <div class="form-group mt-3">
-              <label class="mr-2" for="photo">Upload photo:</label>
-              <input type="file" id="photo" name="item_photo">
-            </div>
-            <hr>
-            <button type="submit" class="btn btn-primary">Add</button>
-          </form>
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name">Item Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter Item Name" required="required" name="item_name">
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="item_category" required="required">
+                <option>Select</option>
+                <option value="Topwear">Topwear</option>
+                <option value="Bottomwear">Bottomwear</option>
+                <option value="Footwear">Footwear</option>
+            </select>
+          </div>
+          <div class="form-group" id="pattern-field" style="display: none;">
+            <label for="pattern">Pattern</label>
+            <select class="form-control" id="pattern" name="item_pattern">
+                <option value="Striped">Striped</option>
+                <option value="Checked">Checked</option>
+                <option value="Solid">Solid</option>
+                <option value="Printed">Printed</option>
+                <option value="Colorblocked">Colorblocked</option>           
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="color" required="required">Color</label>
+            <select name="item_color" class="form-control" id="color">
+                <option value="" disabled selected>Select color</option>
+                <!-- Add your color options here -->
+                <option value="blue">Blue</option>
+                <option value="red">Red</option>
+                <option value="white">White</option>
+                <option value="yellow">Yellow</option>
+                <option value="black">Black</option>
+                <option value="orange">Orange</option>
+                <option value="pink">Pink</option>
+                <option value="green">Green</option>
+                <option value="navy blue">Navy</option>
+                <!-- Add more options as needed -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="brand" required="required">Brand</label>
+            <input type="text" name="item_brand" class="form-control" id="brand" placeholder="Enter Brand">
+          </div>
+
+          <div class="form-group">
+            <label for="price" required="required">Price</label>
+            <input type="text" name="item_price" class="form-control" id="price" placeholder="Enter Price">
+          </div>
+
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select class="form-control" id="type" name="item_type" required="required">
+              <option >Casual</option>
+              <option >Formal</option>
+              <option >Ocassional</option>
+              <option >Festive Wear</option>           
+            </select>
+          </div>
+          <hr>
+          <div class="form-group mt-3">
+            <label class="mr-2" for="photo">Upload photo:</label>
+            <input type="file" id="photo" name="item_photo">
+          </div>
+          <hr>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      {% else %}
+            <p>Please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'signup' %}">sign up</a> to access this page.</p>
+      {% endif %}
     </div> 
    </div>
- 
-
   </body>
+  <script>
+    document.getElementById('category').addEventListener('change', function() {
+        var patternField = document.getElementById('pattern-field');
+        if (this.value === 'Topwear') {
+            patternField.style.display = 'block';
+        } else {
+            patternField.style.display = 'none';
+        }
+    });
+    $(document).ready(function() {
+        $('#color').select2();
+    });
+  </script>
 </html>

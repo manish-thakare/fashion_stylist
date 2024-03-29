@@ -35,7 +35,10 @@
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-dark" type="submit">Search</button>
       </form> -->
-      <button class="btn btn-outline-dark" type="submit" style="margin-right: 60px;">Signout</button>
+      <form action="{% url 'sign_out' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button class="btn btn-outline-dark" type="submit" style="margin-right: 60px;">Sign Out</button>
+      </form>
       
     </div>
   </div>
