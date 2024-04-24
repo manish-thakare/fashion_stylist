@@ -213,100 +213,129 @@ def outfits(request):
     u.save()
     dict={'outf':[],'recom':[]}
     dict["outf"]=outfits
-    dict["recom"]=outfit_recommendations(request, request.user)
+    if outfit_recommendations(request, request.user):
+        dict["recom"]=outfit_recommendations(request, request.user)
     
 
     return render(request, 'outfits.html', {'outfits': dict})
 
 def outfit_recommendations(request, user_id):
-    List=["blue","cyan","white","navy blue","green","black","grey","red","pink","brown","beige","yellow","maroon","olive","orange","purple","peach","cream","teal","mustard","multi","burgandy","charcoal","lavender","coral","magenta","lime green","silver","gold","metalic"]
-    typelist=["Formal","Semi-Formal","Casual","Ocassional","Festive Wear"]
-    user_vectors = Outfits.objects.filter(user=user_id, like=True).values('id', 'upper_id', 'lower_id', 'foot_id', 'type')
-    for outfit in user_vectors:
-    # Fetch upper color
-        upper_item_id = outfit['upper_id']
-        outfit['upper_id'] = List.index(Items.objects.get(id=upper_item_id).color)+1
-        lower_item_id = outfit['lower_id']
-        foot_item_id = outfit['foot_id']
-        outfit['lower_id'] = List.index(Items.objects.get(id=lower_item_id).color)+1
-        outfit['foot_id'] = List.index(Items.objects.get(id=foot_item_id).color)+1
-        outfit['type'] = typelist.index(outfit['type'])+1
-    
-    user_vector_array = np.array([list(item.values())[1:] for item in user_vectors])
+    try:
+        List=["blue","cyan","white","navy blue","green","black","grey","red","pink","brown","beige","yellow","maroon","olive","orange","purple","peach","cream","teal","mustard","multi","burgandy","charcoal","lavender","coral","magenta","lime green","silver","gold","metalic"]
+        typelist=["Formal","Semi-Formal","Casual","Ocassional","Festive Wear"]
+        user_vectors = Outfits.objects.filter(user=user_id, like=True).values('id', 'upper_id', 'lower_id', 'foot_id', 'type')
+        for outfit in user_vectors:
+        # Fetch upper color
+            upper_item_id = outfit['upper_id']
+            outfit['upper_id'] = List.index(Items.objects.get(id=upper_item_id).color)+1
+            lower_item_id = outfit['lower_id']
+            foot_item_id = outfit['foot_id']
+            outfit['lower_id'] = List.index(Items.objects.get(id=lower_item_id).color)+1
+            outfit['foot_id'] = List.index(Items.objects.get(id=foot_item_id).color)+1
+            outfit['type'] = typelist.index(outfit['type'])+1
+        
+        user_vector_array = np.array([list(item.values())[1:] for item in user_vectors])
 
-    # Normalize the vectors
-    normalized_user_vector = user_vector_array / np.linalg.norm(user_vector_array, axis=1)[:, np.newaxis]
+        # Normalize the vectors
+        normalized_user_vector = user_vector_array / np.linalg.norm(user_vector_array, axis=1)[:, np.newaxis]
 
 
-    # Step 3: Calculate User Similarities
-    all_user_vectors = (
-        Outfits.objects.filter(like=True)
-        .exclude(user=user_id)
-        .values('id', 'user', 'upper_id', 'lower_id', 'foot_id', 'type')
-    )
-    for u in all_user_vectors:
-        upper_item_id=u['upper_id']
-        lower_item_id = u['lower_id']
-        foot_item_id = u['foot_id']
-        u['upper_id']=List.index(Items.objects.get(id=upper_item_id).color)+1
-        u['lower_id']=List.index(Items.objects.get(id=lower_item_id).color)+1
-        u['foot_id']=List.index(Items.objects.get(id=foot_item_id).color)+1
-        u['type'] = typelist.index(u['type'])+1
+        # Step 3: Calculate User Similarities
+        all_user_vectors = (
+            Outfits.objects.filter(like=True)
+            .exclude(user=user_id)
+            .values('id', 'user', 'upper_id', 'lower_id', 'foot_id', 'type')
+        )
+        for u in all_user_vectors:
+            upper_item_id=u['upper_id']
+            lower_item_id = u['lower_id']
+            foot_item_id = u['foot_id']
+            u['upper_id']=List.index(Items.objects.get(id=upper_item_id).color)+1
+            u['lower_id']=List.index(Items.objects.get(id=lower_item_id).color)+1
+            u['foot_id']=List.index(Items.objects.get(id=foot_item_id).color)+1
+            u['type'] = typelist.index(u['type'])+1
 
-    all_user_vector_array = np.array([list(item.values())[2:] for item in all_user_vectors])
-    normalized_all_user_vectors = all_user_vector_array / np.linalg.norm(all_user_vector_array, axis=1)[:, np.newaxis]
+        all_user_vector_array = np.array([list(item.values())[2:] for item in all_user_vectors])
+        normalized_all_user_vectors = all_user_vector_array / np.linalg.norm(all_user_vector_array, axis=1)[:, np.newaxis]
 
-    # Calculate cosine similarities
-    similarities = cosine_similarity(normalized_user_vector, normalized_all_user_vectors)[0]
-    threshold = similarities.mean()
+        # Calculate cosine similarities
+        similarities = cosine_similarity(normalized_user_vector, normalized_all_user_vectors)[0]
+        threshold = similarities.mean()
 
-    # Step 4: Identify Similar Users
-    similar_users = {item['user'] for item, similarity in zip(all_user_vectors, similarities) if similarity >= threshold}
-    print(similar_users)
-    # Step 5: Generate Outfit Recommendations
-    user_outfits = Outfits.objects.filter(user=user_id,like=True).values_list('id', flat=True)
-    recommended_outfits = []
+        # Step 4: Identify Similar Users
+        similar_users = {item['user'] for item, similarity in zip(all_user_vectors, similarities) if similarity >= threshold}
+        print(similar_users)
+        # Step 5: Generate Outfit Recommendations
+        user_outfits = Outfits.objects.filter(user=user_id,like=True).values_list('id', flat=True)
+        recommended_outfits = []
 
-    for similar_user_id in similar_users:
-        similar_user_outfits= Outfits.objects.filter(user=similar_user_id,like=True).values_list('id', flat=True)
-        print(similar_user_outfits)
-        for o in similar_user_outfits:
-            recommended_outfits.append(o)
-    # Fetch recommended outfits details
-    # recommended_outfit_details = Outfits.objects.filter(id=recommended_outfits)
-    recom=[]
-    for i in recommended_outfits:
-        o=Outfits.objects.get(id=i)
-        upper = Items.objects.get(id=o.upper_id)
-        lower = Items.objects.get(id=o.lower_id)
-        foot = Items.objects.get(id=o.foot_id)
-        recom.append({
-            'id': o.id,
-            'upper_path': upper.photo.url,
-            'lower_path': lower.photo.url,
-            'bottom_path': foot.photo.url,
-            'score': o.score,
-            'type': o.type,
-        })
-       
-    return recom
-
+        for similar_user_id in similar_users:
+            similar_user_outfits= Outfits.objects.filter(user=similar_user_id,like=True).values_list('id', flat=True)
+            print(similar_user_outfits)
+            for o in similar_user_outfits:
+                recommended_outfits.append(o)
+        # Fetch recommended outfits details
+        # recommended_outfit_details = Outfits.objects.filter(id=recommended_outfits)
+        recom=[]
+        for i in recommended_outfits:
+            o=Outfits.objects.get(id=i)
+            upper = Items.objects.get(id=o.upper_id)
+            lower = Items.objects.get(id=o.lower_id)
+            foot = Items.objects.get(id=o.foot_id)
+            recom.append({
+                'id': o.id,
+                'upper_path': upper.photo.url,
+                'lower_path': lower.photo.url,
+                'bottom_path': foot.photo.url,
+                'score': o.score,
+                'type': o.type,
+            })
+        
+        return recom
+    except Outfits.DoesNotExist:
+        return []
 
 def toggle_like_outfit(request, outfit_id):
+    List=["blue","cyan","white","navy blue","green","black","grey","red","pink","brown","beige","yellow","maroon","olive","orange","purple","peach","cream","teal","mustard","multi","burgandy","charcoal","lavender","coral","magenta","lime green","silver","gold","metalic"]
+    user_data=UserProfile.objects.get(user=request.user)
+    upper=user_data.upper_fav_colors
+    lower=user_data.lower_fav_colors
     outfit = Outfits.objects.get(id=outfit_id)
 
     outfit.like = not outfit.like
+    up=Items.objects.get(id=outfit.upper_id)
+    low=Items.objects.get(id=outfit.lower_id)
+
+    if outfit.like==True:
+        upper[List.index(up.color)]+=0.1
+        lower[List.index(low.color)]+=0.1
+    elif outfit.like==False:
+        upper[List.index(up.color)]-=0.1
+        lower[List.index(low.color)]-=0.1
+    user_data.save()
     outfit.save()
     return JsonResponse({'message': 'Like status toggled successfully'})
 
 def toggle_like_items(request, item_id):
-    # Fetch the outfit
+    List=["blue","cyan","white","navy blue","green","black","grey","red","pink","brown","beige","yellow","maroon","olive","orange","purple","peach","cream","teal","mustard","multi","burgandy","charcoal","lavender","coral","magenta","lime green","silver","gold","metalic"]
     item = Items.objects.get(id=item_id)
     user=request.user
 
     # Toggle the like status
     item.like = not item.like
+    user_data=UserProfile.objects.get(user=request.user)
+    upper=user_data.upper_fav_colors
+    lower=user_data.lower_fav_colors
+    if item.category=='Topwear' and item.like==True:
+        upper[List.index(item.color)]+=0.2
+    elif item.category=='Topwear' and item.like==False:
+        upper[List.index(item.color)]-=0.2
+    elif item.category=='Bottomwear' and item.like==True:
+        lower[List.index(item.color)]+=0.2
+    elif item.category=='Bottomwear' and item.like==False:
+        lower[List.index(item.color)]-=0.2 
     item.save()
+    user_data.save()
     return JsonResponse({'message': 'Like status toggled successfully'})
 
 def delete_item(request, item_id):
@@ -315,8 +344,8 @@ def delete_item(request, item_id):
     item.delete()
     outfits_to_delete = Outfits.objects.filter(
     Q(upper_id=item_id) | Q(lower_id=item_id) | Q(foot_id=item_id),user=request.user)
-    
-    outfits_to_delete.delete()
+    for outfits_to_delete in outfits_to_delete:
+        outfits_to_delete.delete()
     return redirect("/closet/")
 
 def update_item(request, item_id):
@@ -386,12 +415,13 @@ def user_login(request):
 
 
 def scrape_items(request):
-    urls = [
-        'https://www.google.com/search?tbm=shop&q=red+tshirt+black+shirt',
-        'https://www.google.com/search?tbm=shop&q=black+pant+blue+jeans',
-        'https://www.google.com/search?tbm=shop&q=blue+nike+shoes'
-    ]
+    item = Items.objects.filter(user=request.user, like=True)
+    urls = []
 
+    for i in item:
+        urls.append('https://www.google.com/search?tbm=shop&q='+i.color+i.name+i.category+'for men')
+                
+    
     header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
 
     scrapped_items = {'upper_items': [], 'lower_items': [], 'foot_items': []}
@@ -403,11 +433,11 @@ def scrape_items(request):
         soup = BeautifulSoup(data.content, 'html.parser')
 
         category = ''
-        if 'shirt' in url:
+        if 'Topwear' in url:
             category = 'upper_items'
-        elif 'pant' in url:
+        elif 'Bottomwear' in url:
             category = 'lower_items'
-        elif 'shoe' in url:
+        elif 'Footwear' in url:
             category = 'foot_items'
 
         items_added = 0
